@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoteX | Digital Voting Machine</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg: #0b1020;
+            --card: #151d32;
+            --card-light: #1d2942;
+            --text: #f4f7ff;
+            --muted: #9aa8c4;
+            --purple: #8b5cf6;
+            --blue: #38bdf8;
+            --green: #34d399;
+            --pink: #fb7185;
+            --border: rgba(255, 255, 255, 0.09);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background:
+                radial-gradient(ellipse at top left, #202653 0%, transparent 45%),
+                radial-gradient(ellipse at bottom right, #172f49 0%, transparent 45%),
+                var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 28px 18px 40px;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 15px;
+            font-size: 25px;
+            background: linear-gradient(135deg, var(--purple), var(--blue));
+            box-shadow: 0 8px 28px #8b5cf640;
+        }
+
+        .brand h1 {
+            font-size: 25px;
+            letter-spacing: -1px;
+        }
+
+        .brand p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .demo-label {
+            padding: 9px 13px;
+            border: 1px solid #34d39955;
+            background: #34d39912;
+            color: var(--green);
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .hero {
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            color: var(--blue);
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 2px;
+            font-size: 11px;
+            margin-bottom: 12px;
+        }
+
+        .hero h2 {
+            font-size: clamp(30px, 5vw, 47px);
+            letter-spacing: -1.8px;
+            line-height: 1.15;
+            max-width: 700px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #a78bfa, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            color: var(--muted);
+            line-height: 1.7;
+            max-width: 650px;
+            margin-top: 14px;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 28px 0;
+        }
+
+        .stat-card {
+            background: #151d32cc;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 13px;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .stat-foot {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 35px 0 17px;
+        }
+
+        .section-heading h3 {
+            font-size: 20px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .candidates {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 17px;
+        }
+
+        .candidate {
+            background: linear-gradient(160deg, #1b2540, #121a2d);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 23px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .candidate:hover {
+            transform: translateY(-5px);
+            border-color: #8b5cf688;
+        }
+
+        .candidate-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 8px;
+        }
+
+        .avatar {
+            width: 66px;
+            height: 66px;
+            display: grid;
+            place-items: center;
+            border-radius: 20px;
+            font-size: 32px;
+            background: var(--card-light);
+            border: 1px solid var(--border);
+        }
+
+        .candidate-tag {
+            font-size: 10px;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            padding: 6px 9px;
+            border-radius: 20px;
+        }
+
+        .candidate h4 {
+            margin-top: 22px;
+            font-size: 19px;
+        }
+
+        .party {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .symbol {
+            margin-top: 18px;
+            color: #d7def1;
+            background: #ffffff08;
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        .vote-count {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 22px;
+            padding-top: 17px;
+            border-top: 1px solid var(--border);
+        }
+
+        .vote-count span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .vote-count strong {
+            font-size: 23px;
+        }
+
+        .vote-button {
+            width: 100%;
+            margin-top: 18px;
+            padding: 13px;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            background: linear-gradient(100deg, #7c3aed, #4f46e5);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: filter 0.2s, transform 0.2s;
+        }
+
+        .vote-button:hover {
+            filter: brightness(1.15);
+            transform: translateY(-1px);
+        }
+
+        .vote-button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-panel {
+            margin-top: 27px;
+            background: #151d32cc;
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 25px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .results-header h3 {
+            font-size: 19px;
+        }
+
+        .live-label {
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .result-row {
+            margin-bottom: 22px;
+        }
+
+        .result-info {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .result-info span:last-child {
+            color: var(--muted);
+        }
+
+        .bar-bg {
+            width: 100%;
+            height: 10px;
+            background: #28334c;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 20px;
+            transition: width 0.4s ease;
+        }
+
+        .bar-a { background: linear-gradient(90deg, #8b5cf6, #c084fc); }
+        .bar-b { background: linear-gradient(90deg, #0284c7, #38bdf8); }
+        .bar-c { background: linear-gradient(90deg, #059669, #34d399); }
+
+        .winner-box {
+            margin-top: 27px;
+            padding: 17px;
+            background: #8b5cf615;
+            border: 1px solid #8b5cf644;
+            border-radius: 14px;
+            display: flex;
+            gap: 13px;
+            align-items: center;
+        }
+
+        .winner-icon {
+            font-size: 25px;
+        }
+
+        .winner-box h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .winner-box p {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
+
+        .action-button {
+            padding: 12px 16px;
+            border-radius: 11px;
+            border: 1px solid var(--border);
+            background: #ffffff08;
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .action-button:hover {
+            background: #ffffff15;
+        }
+
+        .action-button.danger {
+            color: #fda4af;
+            border-color: #fb718544;
+        }
+
+        .notice {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            background: #fbbf2410;
+            border: 1px solid #fbbf2430;
+            color: #fcd34d;
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 35px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 720px) {
+            .candidates {
+                grid-template-columns: 1fr;
+            }
+
+            .candidate {
+                padding: 20px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card {
+                padding: 17px;
+            }
+
+            .stat-number {
+                font-size: 27px;
+            }
+
+            .hero h2 {
+                letter-spacing: -1px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+
+        <header>
+            <div class="brand">
+                <div class="brand-icon">🗳️</div>
+                <div>
+                    <h1>VoteX</h1>
+                    <p>DIGITAL VOTING MACHINE</p>
+                </div>
+            </div>
+            <div class="demo-label">● INTERACTIVE DEMO</div>
+        </header>
+
+        <section class="hero">
+            <div class="eyebrow">Digital Logic Project</div>
+            <h2>Every vote counts.<br><span class="gradient-text">Every voice matters.</span></h2>
+            <p>
+                Explore a simple digital voting machine interface.
+                Select a candidate, cast a vote, and watch the results
+                update instantly. Built as an educational project inspired
+                by digital systems and Verilog HDL.
+            </p>
+        </section>
+
+        <section class="stats">
+            <div class="stat-card">
+                <div class="stat-label">TOTAL VOTES CAST</div>
+                <div class="stat-number" id="totalVotes">0</div>
+                <div class="stat-foot">Across all candidates</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">NUMBER OF CANDIDATES</div>
+                <div class="stat-number">3</div>
+                <div class="stat-foot">Candidate A, B and C</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">CURRENT LEADER</div>
+                <div class="stat-number" id="leaderStat" style="font-size: 22px;">No votes yet</div>
+                <div class="stat-foot">Based on current demo totals</div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-heading">
+                <div>
+                    <h3>Choose Your Candidate</h3>
+                    <p>Select a candidate below to cast a demo vote.</p>
+                </div>
+            </div>
+
+            <div class="candidates">
+
+                <article class="candidate">
+                    <div class="candidate-top">
+                        <div class="avatar">🦁</div>
+                        <div class="candidate-tag">CANDIDATE 01</div>
+                    </div>
+                    <h4>Candidate A</h4>
+                    <div class="party">Progress Party</div>
+                    <div class="symbol">Symbol: 🦁 Lion</div>
+                    <div class="vote-count">
+                        <span>Votes received</span>
+                        <strong id="countA">0</strong>
+                    </div>
+                    <button class="vote-button" id="voteButtonA" onclick="castVote('A')">
+                        Cast Vote for A →
+                    </button>
+                </article>
+
+                <article class="candidate">
+                    <div class="candidate-top">
+                        <div class="avatar">🌟</div>
+                        <div class="candidate-tag">CANDIDATE 02</div>
+                    </div>
+                    <h4>Candidate B</h4>
+                    <div class="party">Unity Party</div>
+                    <div class="symbol">Symbol: 🌟 Star</div>
+                    <div class="vote-count">
+                        <span>Votes received</span>
+                        <strong id="countB">0</strong>
+                    </div>
+                    <button class="vote-button" id="voteButtonB" onclick="castVote('B')">
+                        Cast Vote for B →
+                    </button>
+                </article>
+
+                <article class="candidate">
+                    <div class="candidate-top">
+                        <div class="avatar">🌳</div>
+                        <div class="candidate-tag">CANDIDATE 03</div>
+                    </div>
+                    <h4>Candidate C</h4>
+                    <div class="party">Future Party</div>
+                    <div class="symbol">Symbol: 🌳 Tree</div>
+                    <div class="vote-count">
+                        <span>Votes received</span>
+                        <strong id="countC">0</strong>
+                    </div>
+                    <button class="vote-button" id="voteButtonC" onclick="castVote('C')">
+                        Cast Vote for C →
+                    </button>
+                </article>
+
+            </div>
+        </section>
+
+        <section class="results-panel">
+            <div class="results-header">
+                <h3>📊 Live Election Results</h3>
+                <span class="live-label">● UPDATING LIVE</span>
+            </div>
+
+            <div class="result-row">
+                <div class="result-info">
+                    <span>Candidate A — Progress Party</span>
+                    <span id="percentA">0% · 0 votes</span>
+                </div>
+                <div class="bar-bg">
+                    <div class="bar bar-a" id="barA"></div>
+                </div>
+            </div>
+
+            <div class="result-row">
+                <div class="result-info">
+                    <span>Candidate B — Unity Party</span>
+                    <span id="percentB">0% · 0 votes</span>
+                </div>
+                <div class="bar-bg">
+                    <div class="bar bar-b" id="barB"></div>
+                </div>
+            </div>
+
+            <div class="result-row">
+                <div class="result-info">
+                    <span>Candidate C — Future Party</span>
+                    <span id="percentC">0% · 0 votes</span>
+                </div>
+                <div class="bar-bg">
+                    <div class="bar bar-c" id="barC"></div>
+                </div>
+            </div>
+
+            <div class="winner-box">
+                <div class="winner-icon">🏆</div>
+                <div>
+                    <h4 id="winnerTitle">Waiting for the first vote</h4>
+                    <p id="winnerDescription">
+                        Cast a vote to see the current leading candidate.
+                    </p>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="action-button" onclick="exportResults()">
+                    ↓ Export Results (CSV)
+                </button>
+                <button class="action-button danger" onclick="resetVotes()">
+                    ↻ Reset Election
+                </button>
+            </div>
+
+            <div class="notice">
+                <strong>⚠ Educational demo only:</strong>
+                This website stores votes only in the current browser page.
+                Refreshing the page resets the counts. It does not connect to
+                the Verilog simulation or physical hardware, authenticate voters,
+                or prevent repeat voting. It is not suitable for real elections.
+            </div>
+        </section>
+
+        <footer>
+            <p>VoteX · Digital Voting Machine · Verilog HDL Mini Project</p>
+            <p>Designed for learning digital systems, counters, and interactive interfaces.</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // Demo vote counters for the three candidates.
+        // These counters are separate from the Verilog simulation.
+        const votes = {
+            A: 0,
+            B: 0,
+            C: 0
+        };
+
+        const MAX_VOTES = 255;
+
+        function castVote(candidate) {
+            if (!(candidate in votes)) {
+                return;
+            }
+
+            // Keep the website counters within the 8-bit range.
+            if (votes[candidate] >= MAX_VOTES) {
+                alert("This candidate has reached the demo limit of 255 votes.");
+                return;
+            }
+
+            votes[candidate]++;
+            updateDashboard();
+        }
+
+        function updateDashboard() {
+            const total = votes.A + votes.B + votes.C;
+
+            document.getElementById("countA").textContent = votes.A;
+            document.getElementById("countB").textContent = votes.B;
+            document.getElementById("countC").textContent = votes.C;
+            document.getElementById("totalVotes").textContent = total;
+
+            // Update each candidate's percentage and progress bar.
+            ["A", "B", "C"].forEach(function(candidate) {
+                const percentage = total === 0
+                    ? 0
+                    : Math.round((votes[candidate] / total) * 100);
+
+                document.getElementById("percent" + candidate).textContent =
+                    percentage + "% · " + votes[candidate] + " votes";
+
+                document.getElementById("bar" + candidate).style.width =
+                    percentage + "%";
+
+                // Disable a candidate's button if its counter reaches 255.
+                document.getElementById("voteButton" + candidate).disabled =
+                    votes[candidate] >= MAX_VOTES;
+            });
+
+            // Find the candidate or candidates with the most votes.
+            const highest = Math.max(votes.A, votes.B, votes.C);
+            const leaderStat = document.getElementById("leaderStat");
+            const winnerTitle = document.getElementById("winnerTitle");
+            const winnerDescription =
+                document.getElementById("winnerDescription");
+
+            if (total === 0) {
+                leaderStat.textContent = "No votes yet";
+                winnerTitle.textContent = "Waiting for the first vote";
+                winnerDescription.textContent =
+                    "Cast a vote to see the current leading candidate.";
+                return;
+            }
+
+            const leaders = Object.keys(votes).filter(function(candidate) {
+                return votes[candidate] === highest;
+            });
+
+            if (leaders.length > 1) {
+                leaderStat.textContent = "Tie";
+                winnerTitle.textContent = "It's a tie!";
+                winnerDescription.textContent =
+                    "Candidates " + leaders.join(", ") +
+                    " are tied with " + highest + " vote(s) each.";
+            } else {
+                const leader = leaders[0];
+                leaderStat.textContent = "Candidate " + leader;
+                winnerTitle.textContent = "Candidate " + leader + " is leading!";
+                winnerDescription.textContent =
+                    "Candidate " + leader + " currently has " + highest +
+                    " vote(s), out of " + total + " total vote(s).";
+            }
+        }
+
+        function resetVotes() {
+            const confirmed = confirm(
+                "Are you sure you want to reset all demo votes?"
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            votes.A = 0;
+            votes.B = 0;
+            votes.C = 0;
+
+            updateDashboard();
+        }
+
+        function exportResults() {
+            const total = votes.A + votes.B + votes.C;
+
+            const rows = [
+                ["Candidate", "Party", "Symbol", "Votes", "Percentage"],
+                [
+                    "Candidate A", "Progress Party", "Lion",
+                    votes.A,
+                    total ? ((votes.A / total) * 100).toFixed(2) + "%" : "0%"
+                ],
+                [
+                    "Candidate B", "Unity Party", "Star",
+                    votes.B,
+                    total ? ((votes.B / total) * 100).toFixed(2) + "%" : "0%"
+                ],
+                [
+                    "Candidate C", "Future Party", "Tree",
+                    votes.C,
+                    total ? ((votes.C / total) * 100).toFixed(2) + "%" : "0%"
+                ],
+                ["TOTAL", "", "", total, total ? "100%" : "0%"]
+            ];
+
+            const csv = rows.map(function(row) {
+                return row.map(function(value) {
+                    return '"' + String(value).replace(/"/g, '""') + '"';
+                }).join(",");
+            }).join("\r\n");
+
+            const blob = new Blob([csv], {
+                type: "text/csv;charset=utf-8;"
+            });
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+
+            link.href = url;
+            link.download = "voting-results.csv";
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            URL.revokeObjectURL(url);
+        }
+
+        // Show the initial dashboard with zero votes.
+        updateDashboard();
+    </script>
+</body>
+</html>
